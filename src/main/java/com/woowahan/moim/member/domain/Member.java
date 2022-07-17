@@ -47,6 +47,12 @@ public class Member {
         this.participant = participant;
     }
 
+    public void checkPassword(String password) {
+        if (!this.password.equals(password)) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,4 +88,6 @@ public class Member {
     public Participant getParticipant() {
         return participant;
     }
+
+
 }
