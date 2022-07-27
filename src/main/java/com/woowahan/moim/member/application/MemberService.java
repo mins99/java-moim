@@ -1,11 +1,12 @@
 package com.woowahan.moim.member.application;
 
+import com.woowahan.moim.common.jwt.SecurityUtil;
 import com.woowahan.moim.member.application.dto.MemberRequest;
 import com.woowahan.moim.member.application.dto.MemberResponse;
 import com.woowahan.moim.member.domain.Member;
 import com.woowahan.moim.member.domain.MemberRepository;
-import com.woowahan.moim.member.domain.MemberType;
 import java.util.Optional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,9 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(MemberRepository memberRepository,
+                         PasswordEncoder passwordEncoder) {
         this.memberRepository = memberRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
@@ -27,10 +31,10 @@ public class MemberService {
             member = savedMember.get();
             member.updateOrganizerInfo(memberRequest.getTeam());
         } else {
-            member = memberRepository.save(memberRequest.toOrganizer());
+            member = memberRepository.save(memberRequest.toOrganizer(passwordEncoder));
         }
 
-        return MemberResponse.of(member, MemberType.ORGANIZER);
+        return MemberResponse.of(member);
     }
 
     @Transactional
@@ -42,9 +46,16 @@ public class MemberService {
             member = savedMember.get();
             member.updateParticipantInfo(memberRequest.getRestrictingIngredient(), memberRequest.getInfo());
         } else {
-            member = memberRepository.save(memberRequest.toParticipant());
+            member = memberRepository.save(memberRequest.toParticipant(passwordEncoder));
         }
 
-        return MemberResponse.of(member, MemberType.PARTICIPANT);
+        return MemberResponse.of(member);
+    }
+
+    @Transactional(readOnly = true)
+    public MemberResponse findMemberInfo() {
+        return memberRepository.findById(SecurityUtil.getCurrentMemberId())
+                .map(MemberResponse::of)
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 정보가 없습니다."));
     }
 }

@@ -1,6 +1,7 @@
 package com.woowahan.moim.member.application.dto;
 
 import com.woowahan.moim.member.domain.Member;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class MemberRequest {
     private String name;
@@ -65,25 +66,25 @@ public class MemberRequest {
         return info;
     }
 
-    public Member toOrganizer() {
+    public Member toOrganizer(PasswordEncoder passwordEncoder) {
         return new Member.Builder()
                 .name(name)
                 .birthday(birthday)
                 .gender(gender)
                 .userId(userId)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .email(email)
                 .team(team)
                 .build();
     }
 
-    public Member toParticipant() {
+    public Member toParticipant(PasswordEncoder passwordEncoder) {
         return new Member.Builder()
                 .name(name)
                 .birthday(birthday)
                 .gender(gender)
                 .userId(userId)
-                .password(password)
+                .password(passwordEncoder.encode(password))
                 .email(email)
                 .info(info)
                 .restrictingIngredient(restrictingIngredient)

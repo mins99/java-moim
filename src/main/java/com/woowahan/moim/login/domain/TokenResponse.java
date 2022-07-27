@@ -1,13 +1,13 @@
 package com.woowahan.moim.login.domain;
 
 public class TokenResponse {
-    private final String name;
+    private final String token;
 
-    public TokenResponse(String name) {
-        this.name = name;
+    public TokenResponse(String token) {
+        this.token = token;
     }
 
-    public String getName() {
-        return name;
+    public String getToken() {
+        return token;
     }
 }
