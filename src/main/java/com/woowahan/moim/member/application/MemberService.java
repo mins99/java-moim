@@ -4,10 +4,8 @@ import com.woowahan.moim.member.application.dto.MemberRequest;
 import com.woowahan.moim.member.application.dto.MemberResponse;
 import com.woowahan.moim.member.domain.Member;
 import com.woowahan.moim.member.domain.MemberRepository;
-import com.woowahan.moim.member.domain.Organizer;
-import com.woowahan.moim.member.domain.OrganizerRepository;
-import com.woowahan.moim.member.domain.Participant;
-import com.woowahan.moim.member.domain.ParticipantRepository;
+import com.woowahan.moim.member.domain.MemberType;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,28 +13,38 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final OrganizerRepository organizerRepository;
-    private final ParticipantRepository participantRepository;
 
-    public MemberService(MemberRepository memberRepository,
-                         OrganizerRepository organizerRepository,
-                         ParticipantRepository participantRepository) {
+    public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.organizerRepository = organizerRepository;
-        this.participantRepository = participantRepository;
     }
 
     @Transactional
     public MemberResponse createOrganizerMember(MemberRequest memberRequest) {
-        Organizer savedOrganizer = organizerRepository.save(memberRequest.toOrganizer());
-        Member savedMember = memberRepository.save(memberRequest.toMember(savedOrganizer));
-        return MemberResponse.of(savedMember);
+        Member member;
+        Optional<Member> savedMember = memberRepository.findByUserId(memberRequest.getUserId());
+
+        if (savedMember.isPresent()) {
+            member = savedMember.get();
+            member.updateOrganizerInfo(memberRequest.getTeam());
+        } else {
+            member = memberRepository.save(memberRequest.toOrganizer());
+        }
+
+        return MemberResponse.of(member, MemberType.ORGANIZER);
     }
 
     @Transactional
     public MemberResponse createParticipantMember(MemberRequest memberRequest) {
-        Participant savedParticipant = participantRepository.save(memberRequest.toParticipant());
-        Member savedMember = memberRepository.save(memberRequest.toMember(savedParticipant));
-        return MemberResponse.of(savedMember);
+        Member member;
+        Optional<Member> savedMember = memberRepository.findByUserId(memberRequest.getUserId());
+
+        if (savedMember.isPresent()) {
+            member = savedMember.get();
+            member.updateParticipantInfo(memberRequest.getRestrictingIngredient(), memberRequest.getInfo());
+        } else {
+            member = memberRepository.save(memberRequest.toParticipant());
+        }
+
+        return MemberResponse.of(member, MemberType.PARTICIPANT);
     }
 }

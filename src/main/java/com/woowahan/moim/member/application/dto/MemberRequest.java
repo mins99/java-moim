@@ -1,8 +1,6 @@
 package com.woowahan.moim.member.application.dto;
 
 import com.woowahan.moim.member.domain.Member;
-import com.woowahan.moim.member.domain.Organizer;
-import com.woowahan.moim.member.domain.Participant;
 
 public class MemberRequest {
     private String name;
@@ -67,19 +65,28 @@ public class MemberRequest {
         return info;
     }
 
-    public Organizer toOrganizer() {
-        return new Organizer(userId, team);
+    public Member toOrganizer() {
+        return new Member.Builder()
+                .name(name)
+                .birthday(birthday)
+                .gender(gender)
+                .userId(userId)
+                .password(password)
+                .email(email)
+                .team(team)
+                .build();
     }
 
-    public Participant toParticipant() {
-        return new Participant(userId, restrictingIngredient, info);
-    }
-
-    public Member toMember(Organizer organizer) {
-        return new Member(name, birthday, gender, userId, password, email, organizer);
-    }
-
-    public Member toMember(Participant participant) {
-        return new Member(name, birthday, gender, userId, password, email, participant);
+    public Member toParticipant() {
+        return new Member.Builder()
+                .name(name)
+                .birthday(birthday)
+                .gender(gender)
+                .userId(userId)
+                .password(password)
+                .email(email)
+                .info(info)
+                .restrictingIngredient(restrictingIngredient)
+                .build();
     }
 }
