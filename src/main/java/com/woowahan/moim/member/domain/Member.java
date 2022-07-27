@@ -4,9 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@DynamicUpdate
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,40 +18,38 @@ public class Member {
     private String userId;
     private String password;
     private String email;
-    @OneToOne
-    private Organizer organizer;
-    @OneToOne
-    private Participant participant;
+    private String team;
+    private String restrictingIngredient;
+    private String info;
 
     protected Member() {
     }
 
-    public Member(String name, String birthday, char gender, String userId, String password, String email,
-                  Organizer organizer) {
-        this.name = name;
-        this.birthday = birthday;
-        this.gender = gender;
-        this.userId = userId;
-        this.password = password;
-        this.email = email;
-        this.organizer = organizer;
-    }
-
-    public Member(String name, String birthday, char gender, String userId, String password, String email,
-                  Participant participant) {
-        this.name = name;
-        this.birthday = birthday;
-        this.gender = gender;
-        this.userId = userId;
-        this.password = password;
-        this.email = email;
-        this.participant = participant;
+    public Member(Builder builder) {
+        this.name = builder.name;
+        this.birthday = builder.birthday;
+        this.gender = builder.gender;
+        this.userId = builder.userId;
+        this.password = builder.password;
+        this.email = builder.email;
+        this.team = builder.team;
+        this.restrictingIngredient = builder.restrictingIngredient;
+        this.info = builder.info;
     }
 
     public void checkPassword(String password) {
         if (!this.password.equals(password)) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+    }
+
+    public void updateOrganizerInfo(String team) {
+        this.team = team;
+    }
+
+    public void updateParticipantInfo(String restrictingIngredient, String info) {
+        this.restrictingIngredient = restrictingIngredient;
+        this.info = info;
     }
 
     public Long getId() {
@@ -81,13 +80,79 @@ public class Member {
         return email;
     }
 
-    public Organizer getOrganizer() {
-        return organizer;
+    public String getTeam() {
+        return team;
     }
 
-    public Participant getParticipant() {
-        return participant;
+    public String getRestrictingIngredient() {
+        return restrictingIngredient;
     }
 
+    public String getInfo() {
+        return info;
+    }
 
+    public static class Builder {
+        private String name;
+        private String birthday;
+        private char gender;
+        private String userId;
+        private String password;
+        private String email;
+        private String team;
+        private String restrictingIngredient;
+        private String info;
+
+        public Builder() {
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder birthday(String birthday) {
+            this.birthday = birthday;
+            return this;
+        }
+
+        public Builder gender(char gender) {
+            this.gender = gender;
+            return this;
+        }
+
+        public Builder userId(String userId) {
+            this.userId = userId;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder team(String team) {
+            this.team = team;
+            return this;
+        }
+
+        public Builder restrictingIngredient(String restrictingIngredient) {
+            this.restrictingIngredient = restrictingIngredient;
+            return this;
+        }
+
+        public Builder info(String info) {
+            this.info = info;
+            return this;
+        }
+
+        public Member build() {
+            return new Member(this);
+        }
+    }
 }
