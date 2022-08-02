@@ -34,7 +34,7 @@ public class MemberService {
         member.updateOrganizerInfo(memberRequest.getTeam());
         authorityRepository.save(new Authority("ROLE_ORGANIZER", memberRequest.getUserId()));
 
-        return MemberResponse.of(member);
+        return MemberResponse.toOrganizer(member);
     }
 
     @Transactional
@@ -44,7 +44,7 @@ public class MemberService {
         member.updateParticipantInfo(memberRequest.getRestrictingIngredient(), memberRequest.getInfo());
         authorityRepository.save(new Authority("ROLE_PARTICIPANT", memberRequest.getUserId()));
 
-        return MemberResponse.of(member);
+        return MemberResponse.toParticipant(member);
     }
 
     @Transactional(readOnly = true)
