@@ -52,6 +52,18 @@ public class Member {
         this.info = info;
     }
 
+    public void updateMemberInfo(Member member) {
+        this.name = member.name;
+        this.birthday = member.birthday;
+        this.gender = member.gender;
+        this.userId = member.userId;
+        this.password = member.password;
+        this.email = member.email;
+        this.team = member.team;
+        this.restrictingIngredient = member.restrictingIngredient;
+        this.info = member.info;
+    }
+
     public Long getId() {
         return id;
     }

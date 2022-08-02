@@ -2,6 +2,7 @@ package com.woowahan.moim.common.jwt;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -59,8 +60,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()        // HttpServletRequest를 사용하는 요청들에 대한 접근제한 설정
                 .antMatchers("/login").permitAll()
-                .antMatchers("/members/organizer").permitAll()
-                .antMatchers("/members/participant").permitAll()       // 회원가입, 로그인의 경우 토큰이 없는 상태에서 요청이 들어오므로 permitAll 설정 추가
+                .antMatchers(HttpMethod.POST, "/members/organizer").permitAll()
+                .antMatchers(HttpMethod.POST, "/members/participant").permitAll()   // 회원가입, 로그인의 경우 토큰이 없는 상태에서 요청이 들어오므로 permitAll 설정 추가
                 .anyRequest().authenticated()      // 나머지 요청들은 모두 인증이 필요
 
                 .and()

@@ -90,4 +90,18 @@ public class MemberRequest {
                 .restrictingIngredient(restrictingIngredient)
                 .build();
     }
+
+    public Member of(PasswordEncoder passwordEncoder) {
+        return new Member.Builder()
+                .name(name)
+                .birthday(birthday)
+                .gender(gender)
+                .userId(userId)
+                .password(passwordEncoder.encode(password))
+                .email(email)
+                .team(team)
+                .info(info)
+                .restrictingIngredient(restrictingIngredient)
+                .build();
+    }
 }

@@ -40,11 +40,19 @@ public class MemberService {
     @Transactional
     public MemberResponse createParticipantMember(MemberRequest memberRequest) {
         Optional<Member> savedMember = memberRepository.findByUserId(memberRequest.getUserId());
-        Member member = savedMember.orElseGet(() -> memberRepository.save(memberRequest.toParticipant(passwordEncoder)));
+        Member member = savedMember.orElseGet(
+                () -> memberRepository.save(memberRequest.toParticipant(passwordEncoder)));
         member.updateParticipantInfo(memberRequest.getRestrictingIngredient(), memberRequest.getInfo());
         authorityRepository.save(new Authority("ROLE_PARTICIPANT", memberRequest.getUserId()));
 
         return MemberResponse.toParticipant(member);
+    }
+
+    @Transactional
+    public void updateMemberInfo(MemberRequest memberRequest) {
+        Member savedMember = memberRepository.findByUserId(memberRequest.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("로그인 유저 정보가 없습니다."));
+        savedMember.updateMemberInfo(memberRequest.of(passwordEncoder));
     }
 
     @Transactional(readOnly = true)
