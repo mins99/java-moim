@@ -1,8 +1,10 @@
 package com.woowahan.moim.login.application;
 
+import com.woowahan.moim.member.domain.AuthorityRepository;
 import com.woowahan.moim.member.domain.Member;
 import com.woowahan.moim.member.domain.MemberRepository;
-import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -16,9 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
+    private final AuthorityRepository authorityRepository;
 
-    public CustomUserDetailsService(MemberRepository memberRepository) {
+    public CustomUserDetailsService(MemberRepository memberRepository,
+                                    AuthorityRepository authorityRepository) {
         this.memberRepository = memberRepository;
+        this.authorityRepository = authorityRepository;
     }
 
     @Override
@@ -30,12 +35,14 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private UserDetails createUserDetails(Member member) {
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ALL");
+        List<GrantedAuthority> grantedAuthorities = authorityRepository.findAllByUserId(member.getUserId()).stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
+                .collect(Collectors.toList());
 
         return new User(
                 String.valueOf(member.getId()),
                 member.getPassword(),
-                Collections.singleton(grantedAuthority)
+                grantedAuthorities
         );
     }
 }
