@@ -19,6 +19,18 @@ public class MemberRequest {
     }
 
     public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
+                         String team) {
+        this(name, birthday, gender, userId, password, email, team,
+                null, null);
+    }
+
+    public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
+                         String restrictingIngredient, String info) {
+        this(name, birthday, gender, userId, password, email, null,
+                restrictingIngredient, info);
+    }
+
+    public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
                          String team, String restrictingIngredient, String info) {
         this.name = name;
         this.birthday = birthday;
