@@ -1,6 +1,7 @@
 package com.woowahan.moim.member.application.dto;
 
 import com.woowahan.moim.member.domain.Member;
+import com.woowahan.moim.member.domain.PasswordValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class MemberRequest {
@@ -72,7 +73,7 @@ public class MemberRequest {
                 .birthday(birthday)
                 .gender(gender)
                 .userId(userId)
-                .password(passwordEncoder.encode(password))
+                .password(passwordEncoder.encode(PasswordValidator.passwordCheck(password)))
                 .email(email)
                 .team(team)
                 .build();
@@ -84,7 +85,7 @@ public class MemberRequest {
                 .birthday(birthday)
                 .gender(gender)
                 .userId(userId)
-                .password(passwordEncoder.encode(password))
+                .password(passwordEncoder.encode(PasswordValidator.passwordCheck(password)))
                 .email(email)
                 .info(info)
                 .restrictingIngredient(restrictingIngredient)
@@ -97,7 +98,7 @@ public class MemberRequest {
                 .birthday(birthday)
                 .gender(gender)
                 .userId(userId)
-                .password(passwordEncoder.encode(password))
+                .password(passwordEncoder.encode(PasswordValidator.passwordCheck(password)))
                 .email(email)
                 .team(team)
                 .info(info)

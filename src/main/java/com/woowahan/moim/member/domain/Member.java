@@ -37,12 +37,6 @@ public class Member {
         this.info = builder.info;
     }
 
-    public void checkPassword(String password) {
-        if (!this.password.equals(password)) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
-        }
-    }
-
     public void updateOrganizerInfo(String team) {
         this.team = team;
     }
