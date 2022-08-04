@@ -12,14 +12,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import com.woowahan.moim.AcceptanceTest;
 import com.woowahan.moim.login.domain.TokenRequest;
 import com.woowahan.moim.login.domain.TokenResponse;
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 public class LoginAcceptanceTest extends AcceptanceTest {
 
@@ -84,13 +82,7 @@ public class LoginAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 로그인_요청(String userId, String password) {
         TokenRequest tokenRequest = new TokenRequest(userId, password);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login")
-                .then().log().all()
-                .extract();
+        return doPostNoAuth("/login", tokenRequest);
     }
 
     private void 로그인_성공(ExtractableResponse<Response> response) {
