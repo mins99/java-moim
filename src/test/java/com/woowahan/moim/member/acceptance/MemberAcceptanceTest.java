@@ -7,6 +7,7 @@ import com.woowahan.moim.AcceptanceTest;
 import com.woowahan.moim.login.domain.TokenResponse;
 import com.woowahan.moim.member.application.dto.MemberRequest;
 import com.woowahan.moim.member.application.dto.MemberResponse;
+import com.woowahan.moim.member.application.dto.MemberUpdateRequest;
 import com.woowahan.moim.member.application.dto.OrganizerMemberRequest;
 import com.woowahan.moim.member.application.dto.ParticipantMemberRequest;
 import io.restassured.response.ExtractableResponse;
@@ -143,6 +144,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원정보_조회됨(response, organizerUser);
     }
 
+    @DisplayName("회원 정보를 수정한다")
+    @Test
+    void updateMemberInfo() {
+        // given
+        주최자를_생성한다(validPassword);
+        String 로그인_토큰 = 로그인_요청(organizerUser, validPassword).as(TokenResponse.class).getToken();
+        MemberResponse 수정전_회원정보 = 회원정보를_조회한다(로그인_토큰).as(MemberResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 회원정보를_수정한다(로그인_토큰);
+
+        // then
+        MemberResponse 수정후_회원정보 = 회원정보를_조회한다(로그인_토큰).as(MemberResponse.class);
+        회원정보_수정됨(response, 수정전_회원정보, 수정후_회원정보);
+    }
+
     public static ExtractableResponse<Response> 주최자를_생성한다(String password) {
         MemberRequest memberRequest = new MemberRequest("홍길동", "19990101", 'M', organizerUser, password, "test@gmail.com", "team");
 
@@ -171,6 +188,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return doGet(loginToken, "/members/me");
     }
 
+    public static ExtractableResponse<Response> 회원정보를_수정한다(String loginToken) {
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("홍길동2", "19900101", 'F', validPassword, "test2@gmail.com", "team2");
+
+        return doPut(loginToken, "/members/me", memberUpdateRequest);
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -187,5 +210,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getUserId()).isEqualTo(userId);
+    }
+
+    public static void 회원정보_수정됨(ExtractableResponse<Response> response, MemberResponse 수정전_회원정보, MemberResponse 수정후_회원정보) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        assertThat(수정전_회원정보.getBirthday()).isNotEqualTo(수정후_회원정보.getBirthday());
+        assertThat(수정전_회원정보.getEmail()).isNotEqualTo(수정후_회원정보.getEmail());
+        assertThat(수정전_회원정보.getGender()).isNotEqualTo(수정후_회원정보.getGender());
+        assertThat(수정전_회원정보.getUserId()).isEqualTo(수정후_회원정보.getUserId());
     }
 }
