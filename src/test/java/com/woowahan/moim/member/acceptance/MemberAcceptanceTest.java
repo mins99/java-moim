@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.woowahan.moim.AcceptanceTest;
 import com.woowahan.moim.login.domain.TokenResponse;
 import com.woowahan.moim.member.application.dto.MemberRequest;
+import com.woowahan.moim.member.application.dto.MemberResponse;
 import com.woowahan.moim.member.application.dto.OrganizerMemberRequest;
 import com.woowahan.moim.member.application.dto.ParticipantMemberRequest;
 import io.restassured.response.ExtractableResponse;
@@ -128,6 +129,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원정보_추가됨(response);
     }
 
+    @DisplayName("회원 정보를 조회한다")
+    @Test
+    void findMemberInfo() {
+        // given
+        주최자를_생성한다(validPassword);
+        String 로그인_토큰 = 로그인_요청(organizerUser, validPassword).as(TokenResponse.class).getToken();
+
+        // when
+        ExtractableResponse<Response> response = 회원정보를_조회한다(로그인_토큰);
+
+        // then
+        회원정보_조회됨(response, organizerUser);
+    }
+
     public static ExtractableResponse<Response> 주최자를_생성한다(String password) {
         MemberRequest memberRequest = new MemberRequest("홍길동", "19990101", 'M', organizerUser, password, "test@gmail.com", "team");
 
@@ -152,6 +167,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return doPut(loginToken, "/members/participant", participantMemberRequest);
     }
 
+    public static ExtractableResponse<Response> 회원정보를_조회한다(String loginToken) {
+        return doGet(loginToken, "/members/me");
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -160,7 +179,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 회원_생성_실패(ExtractableResponse<Response> response) {
+    public static void 회원_생성_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 회원정보_조회됨(ExtractableResponse<Response> response, String userId) {
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+        assertThat(memberResponse.getId()).isNotNull();
+        assertThat(memberResponse.getUserId()).isEqualTo(userId);
     }
 }

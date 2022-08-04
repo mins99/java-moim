@@ -3,15 +3,18 @@ package com.woowahan.moim.member.application.dto;
 import com.woowahan.moim.member.domain.Member;
 
 public class MemberResponse {
-    private final long id;
-    private final String name;
-    private final String birthday;
-    private final char gender;
-    private final String userId;
-    private final String email;
-    private final String team;
-    private final String restrictingIngredient;
-    private final String info;
+    private long id;
+    private String name;
+    private String birthday;
+    private char gender;
+    private String userId;
+    private String email;
+    private String team;
+    private String restrictingIngredient;
+    private String info;
+
+    public MemberResponse() {
+    }
 
     public MemberResponse(Builder builder) {
         this.id = builder.id;
