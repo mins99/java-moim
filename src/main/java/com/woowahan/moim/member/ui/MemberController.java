@@ -3,6 +3,8 @@ package com.woowahan.moim.member.ui;
 import com.woowahan.moim.member.application.MemberService;
 import com.woowahan.moim.member.application.dto.MemberRequest;
 import com.woowahan.moim.member.application.dto.MemberResponse;
+import com.woowahan.moim.member.application.dto.OrganizerMemberRequest;
+import com.woowahan.moim.member.application.dto.ParticipantMemberRequest;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,26 +24,26 @@ public class MemberController {
     }
 
     @PostMapping("/organizer")
-    public ResponseEntity createOrganizerMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> createOrganizerMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createOrganizerMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
     @PutMapping("/organizer")
-    public ResponseEntity updateOrganizerMember(@RequestBody MemberRequest request) {
-        memberService.createOrganizerMember(request);
+    public ResponseEntity<MemberResponse> updateOrganizerMember(@RequestBody OrganizerMemberRequest request) {
+        memberService.updateOrganizerMember(request);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/participant")
-    public ResponseEntity createParticipantMember(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> createParticipantMember(@RequestBody MemberRequest request) {
         MemberResponse member = memberService.createParticipantMember(request);
         return ResponseEntity.created(URI.create("/members/" + member.getId())).build();
     }
 
     @PutMapping("/participant")
-    public ResponseEntity updateParticipantMember(@RequestBody MemberRequest request) {
-        memberService.createParticipantMember(request);
+    public ResponseEntity<MemberResponse> updateParticipantMember(@RequestBody ParticipantMemberRequest request) {
+        memberService.updateParticipantMember(request);
         return ResponseEntity.ok().build();
     }
 
@@ -51,7 +53,7 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity updateMemberInfo(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> updateMemberInfo(@RequestBody MemberRequest request) {
         memberService.updateMemberInfo(request);
         return ResponseEntity.ok().build();
     }
