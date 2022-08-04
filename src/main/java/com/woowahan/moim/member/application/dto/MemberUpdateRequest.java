@@ -4,38 +4,33 @@ import com.woowahan.moim.member.domain.Member;
 import com.woowahan.moim.member.domain.PasswordValidator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class MemberRequest {
+public class MemberUpdateRequest {
     private String name;
     private String birthday;
     private char gender;
-    private String userId;
     private String password;
     private String email;
     private String team;
     private String restrictingIngredient;
     private String info;
 
-    public MemberRequest() {
+    public MemberUpdateRequest() {
     }
 
-    public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
-                         String team) {
-        this(name, birthday, gender, userId, password, email, team,
-                null, null);
+    public MemberUpdateRequest(String name, String birthday, char gender, String password, String email, String team) {
+        this(name, birthday, gender, password, email, team, null, null);
     }
 
-    public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
-                         String restrictingIngredient, String info) {
-        this(name, birthday, gender, userId, password, email, null,
-                restrictingIngredient, info);
+    public MemberUpdateRequest(String name, String birthday, char gender, String password, String email,
+                               String restrictingIngredient, String info) {
+        this(name, birthday, gender, password, email, null, restrictingIngredient, info);
     }
 
-    public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
-                         String team, String restrictingIngredient, String info) {
+    public MemberUpdateRequest(String name, String birthday, char gender, String password, String email,
+                               String team, String restrictingIngredient, String info) {
         this.name = name;
         this.birthday = birthday;
         this.gender = gender;
-        this.userId = userId;
         this.password = password;
         this.email = email;
         this.team = team;
@@ -53,10 +48,6 @@ public class MemberRequest {
 
     public char getGender() {
         return gender;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public String getPassword() {
@@ -79,26 +70,14 @@ public class MemberRequest {
         return info;
     }
 
-    public Member toOrganizer(PasswordEncoder passwordEncoder) {
+    public Member of(PasswordEncoder passwordEncoder) {
         return new Member.Builder()
                 .name(name)
                 .birthday(birthday)
                 .gender(gender)
-                .userId(userId)
                 .password(passwordEncoder.encode(PasswordValidator.passwordCheck(password)))
                 .email(email)
                 .team(team)
-                .build();
-    }
-
-    public Member toParticipant(PasswordEncoder passwordEncoder) {
-        return new Member.Builder()
-                .name(name)
-                .birthday(birthday)
-                .gender(gender)
-                .userId(userId)
-                .password(passwordEncoder.encode(PasswordValidator.passwordCheck(password)))
-                .email(email)
                 .info(info)
                 .restrictingIngredient(restrictingIngredient)
                 .build();

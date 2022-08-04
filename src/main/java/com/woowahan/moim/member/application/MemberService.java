@@ -3,6 +3,7 @@ package com.woowahan.moim.member.application;
 import com.woowahan.moim.common.jwt.SecurityUtil;
 import com.woowahan.moim.member.application.dto.MemberRequest;
 import com.woowahan.moim.member.application.dto.MemberResponse;
+import com.woowahan.moim.member.application.dto.MemberUpdateRequest;
 import com.woowahan.moim.member.application.dto.OrganizerMemberRequest;
 import com.woowahan.moim.member.application.dto.ParticipantMemberRequest;
 import com.woowahan.moim.member.domain.Authority;
@@ -71,7 +72,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberInfo(MemberRequest memberRequest) {
+    public void updateMemberInfo(MemberUpdateRequest memberRequest) {
         Member savedMember = memberRepository.findById(SecurityUtil.getCurrentMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("로그인 유저 정보가 없습니다."));
         savedMember.updateMemberInfo(memberRequest.of(passwordEncoder));

@@ -3,6 +3,7 @@ package com.woowahan.moim.member.ui;
 import com.woowahan.moim.member.application.MemberService;
 import com.woowahan.moim.member.application.dto.MemberRequest;
 import com.woowahan.moim.member.application.dto.MemberResponse;
+import com.woowahan.moim.member.application.dto.MemberUpdateRequest;
 import com.woowahan.moim.member.application.dto.OrganizerMemberRequest;
 import com.woowahan.moim.member.application.dto.ParticipantMemberRequest;
 import java.net.URI;
@@ -54,7 +55,7 @@ public class MemberController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<MemberResponse> updateMemberInfo(@RequestBody MemberRequest request) {
+    public ResponseEntity<MemberResponse> updateMemberInfo(@RequestBody MemberUpdateRequest request) {
         memberService.updateMemberInfo(request);
         return ResponseEntity.ok().build();
     }

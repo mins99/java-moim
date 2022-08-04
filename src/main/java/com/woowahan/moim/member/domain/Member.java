@@ -1,5 +1,6 @@
 package com.woowahan.moim.member.domain;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -50,7 +51,6 @@ public class Member {
         this.name = member.name;
         this.birthday = member.birthday;
         this.gender = member.gender;
-        this.userId = member.userId;
         this.password = member.password;
         this.email = member.email;
         this.team = member.team;
@@ -160,5 +160,26 @@ public class Member {
         public Member build() {
             return new Member(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Member member = (Member) o;
+        return gender == member.gender && Objects.equals(name, member.name) && Objects.equals(birthday,
+                member.birthday) && Objects.equals(userId, member.userId) && Objects.equals(password,
+                member.password) && Objects.equals(email, member.email) && Objects.equals(team,
+                member.team) && Objects.equals(restrictingIngredient, member.restrictingIngredient)
+                && Objects.equals(info, member.info);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, birthday, gender, userId, password, email, team, restrictingIngredient, info);
     }
 }
