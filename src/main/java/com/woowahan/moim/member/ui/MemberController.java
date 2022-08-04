@@ -7,6 +7,7 @@ import com.woowahan.moim.member.application.dto.OrganizerMemberRequest;
 import com.woowahan.moim.member.application.dto.ParticipantMemberRequest;
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -56,5 +57,10 @@ public class MemberController {
     public ResponseEntity<MemberResponse> updateMemberInfo(@RequestBody MemberRequest request) {
         memberService.updateMemberInfo(request);
         return ResponseEntity.ok().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

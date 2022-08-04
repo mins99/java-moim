@@ -1,5 +1,7 @@
 package com.woowahan.moim.login.acceptance;
 
+import static com.woowahan.moim.member.acceptance.MemberAcceptanceTest.invalidPassword;
+import static com.woowahan.moim.member.acceptance.MemberAcceptanceTest.validPassword;
 import static com.woowahan.moim.member.acceptance.MemberAcceptanceTest.주최자를_추가한다;
 import static com.woowahan.moim.member.acceptance.MemberAcceptanceTest.참여자를_추가한다;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,28 +25,48 @@ class LoginAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        주최자를_추가한다();
-        참여자를_추가한다();
+        주최자를_추가한다(validPassword);
+        참여자를_추가한다(validPassword);
     }
 
     @DisplayName("주최자 로그인")
     @Test
-    void login() {
+    void organizer_login() {
         // given & when
-        ExtractableResponse<Response> response = 로그인_요청("organizer", "!@#abc123");
+        ExtractableResponse<Response> response = 로그인_요청("organizer", validPassword);
 
         // then
         로그인_성공(response);
     }
 
+    @DisplayName("주최자 로그인시 비밀번호가 틀리면 로그인 실패")
+    @Test
+    void organizer_login_fail() {
+        // given & when
+        ExtractableResponse<Response> response = 로그인_요청("organizer", invalidPassword);
+
+        // then
+        로그인_실패(response);
+    }
+
     @DisplayName("참여자 로그인")
     @Test
-    void login2() {
+    void participant_login() {
         // given & when
-        ExtractableResponse<Response> response = 로그인_요청("participant", "!@#abc123");
+        ExtractableResponse<Response> response = 로그인_요청("participant", validPassword);
 
         // then
         로그인_성공(response);
+    }
+
+    @DisplayName("참여자 로그인시 비밀번호가 틀리면 로그인 실패")
+    @Test
+    void participant_login_fail() {
+        // given & when
+        ExtractableResponse<Response> response = 로그인_요청("participant", invalidPassword);
+
+        // then
+        로그인_실패(response);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String userId, String password) {
