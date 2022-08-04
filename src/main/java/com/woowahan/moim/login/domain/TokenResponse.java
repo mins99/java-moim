@@ -1,7 +1,10 @@
 package com.woowahan.moim.login.domain;
 
 public class TokenResponse {
-    private final String token;
+    private String token;
+
+    public TokenResponse() {
+    }
 
     public TokenResponse(String token) {
         this.token = token;
