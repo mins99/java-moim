@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
@@ -78,7 +79,6 @@ public class MemberService {
         savedMember.updateMemberInfo(memberRequest.of(passwordEncoder));
     }
 
-    @Transactional(readOnly = true)
     public MemberResponse findMemberInfo() {
         return memberRepository.findById(SecurityUtil.getCurrentMemberId())
                 .map(MemberResponse::of)

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LoginService {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
@@ -20,8 +20,7 @@ public class LoginService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenProvider tokenProvider;
 
-    public LoginService(
-            AuthenticationManagerBuilder authenticationManagerBuilder, TokenProvider tokenProvider) {
+    public LoginService(AuthenticationManagerBuilder authenticationManagerBuilder, TokenProvider tokenProvider) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.tokenProvider = tokenProvider;
     }
