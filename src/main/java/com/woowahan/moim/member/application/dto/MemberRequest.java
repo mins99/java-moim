@@ -1,13 +1,16 @@
 package com.woowahan.moim.member.application.dto;
 
 import com.woowahan.moim.member.domain.Member;
+import com.woowahan.moim.member.domain.Organizer;
+import com.woowahan.moim.member.domain.Participant;
 import com.woowahan.moim.member.domain.PasswordValidator;
+import java.time.LocalDate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class MemberRequest {
     private String name;
-    private String birthday;
-    private char gender;
+    private LocalDate birthday;
+    private String gender;
     private String userId;
     private String password;
     private String email;
@@ -18,20 +21,20 @@ public class MemberRequest {
     public MemberRequest() {
     }
 
-    public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
+    public MemberRequest(String name, LocalDate birthday, String gender, String userId, String password, String email,
                          String team) {
         this(name, birthday, gender, userId, password, email, team,
                 null, null);
     }
 
-    public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
+    public MemberRequest(String name, LocalDate birthday, String gender, String userId, String password, String email,
                          String restrictingIngredient, String info) {
         this(name, birthday, gender, userId, password, email, null,
                 restrictingIngredient, info);
     }
 
-    public MemberRequest(String name, String birthday, char gender, String userId, String password, String email,
-                         String team, String restrictingIngredient, String info) {
+    public MemberRequest(String name, LocalDate birthday, String gender, String userId, String password,
+                         String email, String team, String restrictingIngredient, String info) {
         this.name = name;
         this.birthday = birthday;
         this.gender = gender;
@@ -47,11 +50,11 @@ public class MemberRequest {
         return name;
     }
 
-    public String getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
@@ -80,27 +83,26 @@ public class MemberRequest {
     }
 
     public Member toOrganizer(PasswordEncoder passwordEncoder) {
-        return new Member.Builder()
+        return Member.builder()
                 .name(name)
                 .birthday(birthday)
                 .gender(gender)
                 .userId(userId)
                 .password(passwordEncoder.encode(PasswordValidator.passwordCheck(password)))
                 .email(email)
-                .team(team)
+                .organizer(new Organizer(team))
                 .build();
     }
 
     public Member toParticipant(PasswordEncoder passwordEncoder) {
-        return new Member.Builder()
+        return Member.builder()
                 .name(name)
                 .birthday(birthday)
                 .gender(gender)
                 .userId(userId)
                 .password(passwordEncoder.encode(PasswordValidator.passwordCheck(password)))
                 .email(email)
-                .info(info)
-                .restrictingIngredient(restrictingIngredient)
+                .participant(new Participant(info, restrictingIngredient))
                 .build();
     }
 }
