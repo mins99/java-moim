@@ -12,6 +12,7 @@ import com.woowahan.moim.member.application.dto.OrganizerMemberRequest;
 import com.woowahan.moim.member.application.dto.ParticipantMemberRequest;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -161,13 +162,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 주최자를_생성한다(String password) {
-        MemberRequest memberRequest = new MemberRequest("홍길동", "19990101", 'M', organizerUser, password, "test@gmail.com", "team");
+        MemberRequest memberRequest = new MemberRequest("홍길동", LocalDate.of(1999, 01, 01), "M", organizerUser, password, "test@gmail.com", "team");
 
         return doPostNoAuth("/members/organizer", memberRequest);
     }
 
     public static ExtractableResponse<Response> 참여자를_생성한다(String password) {
-        MemberRequest memberRequest = new MemberRequest("홍길동", "19990101", 'M', participantUser, password, "test@gmail.com", "1,2,3,4", "안녕하세요");
+        MemberRequest memberRequest = new MemberRequest("홍길동", LocalDate.of(1999, 01, 01), "M", participantUser, password, "test@gmail.com", "1,2,3,4", "안녕하세요");
 
         return doPostNoAuth("/members/participant", memberRequest);
     }
@@ -189,7 +190,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 회원정보를_수정한다(String loginToken) {
-        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("홍길동2", "19900101", 'F', validPassword, "test2@gmail.com", "team2");
+        MemberUpdateRequest memberUpdateRequest = new MemberUpdateRequest("홍길동2", LocalDate.of(1990, 11, 11), "F", validPassword, "test2@gmail.com", "team2");
 
         return doPut(loginToken, "/members/me", memberUpdateRequest);
     }
