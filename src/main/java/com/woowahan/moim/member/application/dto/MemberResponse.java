@@ -1,12 +1,14 @@
 package com.woowahan.moim.member.application.dto;
 
 import com.woowahan.moim.member.domain.Member;
+import java.time.LocalDate;
+import lombok.Builder;
 
 public class MemberResponse {
     private long id;
     private String name;
-    private String birthday;
-    private char gender;
+    private LocalDate birthday;
+    private String gender;
     private String userId;
     private String email;
     private String team;
@@ -16,84 +18,22 @@ public class MemberResponse {
     public MemberResponse() {
     }
 
-    public MemberResponse(Builder builder) {
-        this.id = builder.id;
-        this.name = builder.name;
-        this.birthday = builder.birthday;
-        this.gender = builder.gender;
-        this.userId = builder.userId;
-        this.email = builder.email;
-        this.team = builder.team;
-        this.restrictingIngredient = builder.restrictingIngredient;
-        this.info = builder.info;
-    }
-
-    public static class Builder {
-        private Long id;
-        private String name;
-        private String birthday;
-        private char gender;
-        private String userId;
-        private String email;
-        private String team;
-        private String restrictingIngredient;
-        private String info;
-
-        public Builder() {
-        }
-
-        public Builder id(Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder birthday(String birthday) {
-            this.birthday = birthday;
-            return this;
-        }
-
-        public Builder gender(char gender) {
-            this.gender = gender;
-            return this;
-        }
-
-        public Builder userId(String userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Builder email(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder team(String team) {
-            this.team = team;
-            return this;
-        }
-
-        public Builder restrictingIngredient(String restrictingIngredient) {
-            this.restrictingIngredient = restrictingIngredient;
-            return this;
-        }
-
-        public Builder info(String info) {
-            this.info = info;
-            return this;
-        }
-
-        public MemberResponse build() {
-            return new MemberResponse(this);
-        }
+    @Builder
+    private MemberResponse(long id, String name, LocalDate birthday, String gender, String userId, String email,
+                          String team, String restrictingIngredient, String info) {
+        this.id = id;
+        this.name = name;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.userId = userId;
+        this.email = email;
+        this.team = team;
+        this.restrictingIngredient = restrictingIngredient;
+        this.info = info;
     }
 
     public static MemberResponse toOrganizer(Member member) {
-        return new MemberResponse.Builder()
+        return MemberResponse.builder()
                 .id(member.getId())
                 .name(member.getName())
                 .birthday(member.getBirthday())
@@ -105,20 +45,20 @@ public class MemberResponse {
     }
 
     public static MemberResponse toParticipant(Member member) {
-        return new Builder()
+        return MemberResponse.builder()
                 .id(member.getId())
                 .name(member.getName())
                 .birthday(member.getBirthday())
                 .gender(member.getGender())
                 .userId(member.getUserId())
                 .email(member.getEmail())
-                .info(member.getInfo())
                 .restrictingIngredient(member.getRestrictingIngredient())
+                .info(member.getInfo())
                 .build();
     }
 
     public static MemberResponse of(Member member) {
-        return new MemberResponse.Builder()
+        return MemberResponse.builder()
                 .id(member.getId())
                 .name(member.getName())
                 .birthday(member.getBirthday())
@@ -126,8 +66,8 @@ public class MemberResponse {
                 .userId(member.getUserId())
                 .email(member.getEmail())
                 .team(member.getTeam())
-                .info(member.getInfo())
                 .restrictingIngredient(member.getRestrictingIngredient())
+                .info(member.getInfo())
                 .build();
     }
 
@@ -139,11 +79,11 @@ public class MemberResponse {
         return name;
     }
 
-    public String getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
