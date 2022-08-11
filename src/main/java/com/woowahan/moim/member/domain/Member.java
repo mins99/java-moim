@@ -1,50 +1,47 @@
 package com.woowahan.moim.member.domain;
 
-import java.util.Objects;
+import java.time.LocalDate;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @DynamicUpdate
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String birthday;
-    private char gender;
+    @DateTimeFormat(pattern = "yyyyMMdd")
+    private LocalDate birthday;
+    @Column(length = 1)
+    private String gender;
     private String userId;
     private String password;
     private String email;
-    private String team;
-    private String restrictingIngredient;
-    private String info;
-
-    protected Member() {
-    }
-
-    public Member(Builder builder) {
-        this.name = builder.name;
-        this.birthday = builder.birthday;
-        this.gender = builder.gender;
-        this.userId = builder.userId;
-        this.password = builder.password;
-        this.email = builder.email;
-        this.team = builder.team;
-        this.restrictingIngredient = builder.restrictingIngredient;
-        this.info = builder.info;
-    }
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Organizer organizer;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    private Participant participant;
 
     public void updateOrganizerInfo(String team) {
-        this.team = team;
+        this.organizer.updateOrganizerInfo(team);
     }
 
     public void updateParticipantInfo(String restrictingIngredient, String info) {
-        this.restrictingIngredient = restrictingIngredient;
-        this.info = info;
+        this.participant.updateParticipantInfo(restrictingIngredient, info);
     }
 
     public void updateMemberInfo(Member member) {
@@ -53,133 +50,36 @@ public class Member {
         this.gender = member.gender;
         this.password = member.password;
         this.email = member.email;
-        this.team = member.team;
-        this.restrictingIngredient = member.restrictingIngredient;
-        this.info = member.info;
+        if (this.organizer != null) {
+            updateOrganizerInfo(member.organizer.getTeam());
+        }
+        if (this.participant != null) {
+            updateParticipantInfo(member.participant.getRestrictingIngredient(), member.participant.getInfo());
+        }
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getBirthday() {
-        return birthday;
-    }
-
-    public char getGender() {
-        return gender;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEmail() {
-        return email;
+    @Builder
+    public Member(String name, LocalDate birthday, String gender, String userId, String password, String email,
+                  Organizer organizer, Participant participant) {
+        this.name = name;
+        this.birthday = birthday;
+        this.gender = gender;
+        this.userId = userId;
+        this.password = password;
+        this.email = email;
+        this.organizer = organizer;
+        this.participant = participant;
     }
 
     public String getTeam() {
-        return team;
+        return organizer != null ? organizer.getTeam() : null;
     }
 
     public String getRestrictingIngredient() {
-        return restrictingIngredient;
+        return participant != null ? participant.getRestrictingIngredient() : null;
     }
 
     public String getInfo() {
-        return info;
-    }
-
-    public static class Builder {
-        private String name;
-        private String birthday;
-        private char gender;
-        private String userId;
-        private String password;
-        private String email;
-        private String team;
-        private String restrictingIngredient;
-        private String info;
-
-        public Builder() {
-        }
-
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public Builder birthday(String birthday) {
-            this.birthday = birthday;
-            return this;
-        }
-
-        public Builder gender(char gender) {
-            this.gender = gender;
-            return this;
-        }
-
-        public Builder userId(String userId) {
-            this.userId = userId;
-            return this;
-        }
-
-        public Builder password(String password) {
-            this.password = password;
-            return this;
-        }
-
-        public Builder email(String email) {
-            this.email = email;
-            return this;
-        }
-
-        public Builder team(String team) {
-            this.team = team;
-            return this;
-        }
-
-        public Builder restrictingIngredient(String restrictingIngredient) {
-            this.restrictingIngredient = restrictingIngredient;
-            return this;
-        }
-
-        public Builder info(String info) {
-            this.info = info;
-            return this;
-        }
-
-        public Member build() {
-            return new Member(this);
-        }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Member member = (Member) o;
-        return gender == member.gender && Objects.equals(name, member.name) && Objects.equals(birthday,
-                member.birthday) && Objects.equals(userId, member.userId) && Objects.equals(password,
-                member.password) && Objects.equals(email, member.email) && Objects.equals(team,
-                member.team) && Objects.equals(restrictingIngredient, member.restrictingIngredient)
-                && Objects.equals(info, member.info);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(name, birthday, gender, userId, password, email, team, restrictingIngredient, info);
+        return participant != null ? participant.getInfo() : null;
     }
 }
